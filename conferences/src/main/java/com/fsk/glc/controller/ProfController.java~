@@ -1,0 +1,125 @@
+package com.fsk.glc.controller;
+
+import java.io.IOException;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import com.fsk.glc.entities.Papier;
+import com.fsk.glc.entities.Rapport;
+import com.fsk.glc.entities.RapportType;
+import com.fsk.glc.entities.User;
+import com.fsk.glc.entities.validator.RapportValidator;
+import com.fsk.glc.mail.SmtpMailSender;
+import com.fsk.glc.models.RapportModel;
+import com.fsk.glc.service.IConefrenceService;
+
+
+@Controller
+@RequestMapping("/prof")
+public class ProfController {
+	
+	@Autowired
+	private IConefrenceService service;
+	@Autowired
+	private SmtpMailSender smtpMailSender;
+	
+	@Autowired
+	private RapportValidator rapportValidator;
+	
+	 
+	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+		binder.setValidator(rapportValidator);
+	}
+	
+	 @RequestMapping(value = {"/getpapers" },method=RequestMethod.GET)
+	    public String getpapercomite(Model model) {
+	        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	        if(user.getComite()!=null)
+	        	model.addAttribute("papers", this.service.getpapersofcomite(user.getComite().getId()));
+	        else
+	        	return "redirect:/";
+	        return "conference/paperscomite";
+	    }
+	 
+	 
+	 @RequestMapping(value="/addrapport/{id_papier}",method=RequestMethod.GET)
+		public String addPapier(@PathVariable Integer id_papier,Model model){
+		 	RapportModel  rapportModel= new RapportModel();
+		 	rapportModel.setPapier(id_papier);
+			model.addAttribute("rapportModel", rapportModel);
+			return "conference/addrapport";
+		}
+	 
+	 @RequestMapping(value = "/addrapport", method = RequestMethod.POST)
+	    public String addpaper(@Valid RapportModel rapportModel, BindingResult bindingResult, Model model) throws IllegalStateException, IOException, MessagingException {
+		 if (bindingResult.hasErrors()) {
+			 RapportModel rm = new RapportModel();
+			 	rm.setPapier(rapportModel.getPapier());
+				model.addAttribute("rapport", rm);
+				return "conference/addrapport";
+	        }
+		 	User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	        Rapport rap = new Rapport();
+	        Papier p = service.getpapierById(rapportModel.getPapier());
+	        rap.setComite(user.getComite());
+	        rap.setPapier(p);
+	        rap.setRapportType(rapportModel.getType());
+	        if(!(rapportModel.getFile().isEmpty())){ 
+	        	
+	        	
+	        	rap.setRapport(rapportModel.getFile().getBytes());
+	        	rap.setNamerapportfile(rapportModel.getFile().getOriginalFilename());
+	        	rap.setTyperapportfile(rapportModel.getFile().getContentType());
+	        }
+	        	/*if(rap.getRapportType()==RapportType.ACCEPTE){
+	        	smtpMailSender.send(p.getAuteur().getEmail(), "Acceptation du papier "+p.getTitre() +" soumis au conférence "+p.getConference().getTitre(), "nous vous informons votre papiers soumis au conference "+p.getConference().getTitre()+ " a été bien accepté , et nous vous invitons a envoyer la version finale");
+	        	}
+	        	if(rap.getRapportType()==RapportType.REJETE){
+		        	smtpMailSender.send(p.getAuteur().getEmail(), "Rejet du papier :"+p.getTitre() +"soumis au conférence "+p.getConference().getTitre(), "nous vous informons votre papiers soumis au conference "+p.getConference().getTitre()+ " a été refusé , nous sommes vraiment désolé !!! , ");
+		        }*/
+	        	service.addRapport(rap);
+	    		return "redirect:/prof/getpapers";
+	    }
+	 
+	 
+	 @RequestMapping(value = { "/downloadpapierparprof/{id}" }, method = RequestMethod.GET)
+	    public String downloadpapier(@PathVariable int id, HttpServletResponse response) throws IOException {
+	        Papier p = service.getpapierById(id);
+	        response.setContentType(p.getTypeprogfile());
+	        response.setContentLength(p.getPapier().length);
+	        response.setHeader("Content-Disposition","attachment; filename=\"" + p.getNameprogfile() +"\"");
+	  
+	        FileCopyUtils.copy(p.getPapier(), response.getOutputStream());
+	  
+	        return "redirect:/prof/getpapers";
+	    }
+	 
+	 
+	 @RequestMapping(value = { "/downloadrapport/{id}" }, method = RequestMethod.GET)
+	    public String downloadrapport(@PathVariable int id, HttpServletResponse response) throws IOException {
+	        Rapport r = service.getrapportById(id);
+	        response.setContentType(r.getTyperapportfile());
+	        response.setContentLength(r.getRapport().length);
+	        response.setHeader("Content-Disposition","attachment; filename=\"" + r.getNamerapportfile() +"\"");
+	  
+	        FileCopyUtils.copy(r.getRapport(), response.getOutputStream());
+	  
+	        return "redirect:/prof/getpapers";
+	    }
+
+}

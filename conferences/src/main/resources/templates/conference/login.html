@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gestion des Conférences Scientifiques</title>
+        <!--/*/ <th:block th:include="fragments/head :: head"></th:block> /*/-->
+    </head>
+    <body>
+        <!--/*/ <th:block th:include="fragments/header :: body"></th:block> /*/-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <!--<div class="container">-->
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Login</div>
+                        <div class="panel-body">
+                           <form name="form" th:action="@{/loginok}" method="POST" class="form-horizontal">
+						<fieldset>
+						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+						<div class="form-group">
+							<!-- Field MUST be called 'username' or Spring won't find it. -->
+							<label for="username" class="col-lg-3 control-label" th:text="Username">Username</label>
+
+							<div class="col-lg-9">
+								<input type="text" name="username" id="username" value="" placeholder="Username" class="form-control" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="password" class="col-lg-3 control-label" th:text="Password">Password</label>
+
+							<div class="col-lg-9">
+								<input type="password" name="password" id="password" placeholder="Password" class="form-control" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-9 col-lg-offset-3">
+								<button type="submit" class="btn btn-primary" th:text="Login">[Login]</button>
+							</div>
+
+						</div>
+					</fieldset>
+
+				</form>
+				  			<div role="alert" th:if="${param.error}" class="alert alert-error">Login ou Mot de passe sont incorrectes</div>
+					
+                        </div>
+                        <div class="panel-footer">
+                        </div>
+                    </div>
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/js :: body"></th:block> /*/-->
+        <script src="../static/js/app.js" th:src="@{/js/app.js}"></script>
+    </body>
+</html>

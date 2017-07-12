@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gestion des Conférences Scientifiques</title>
+        <!--/*/ <th:block th:include="fragments/head :: head"></th:block> /*/-->
+    </head>
+    <body>
+        <!--/*/ <th:block th:include="fragments/header :: body"></th:block> /*/-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <!--<div class="container">-->
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">affecter</div>
+                        <div class="panel-body">
+                            <form action="/conference/affecter" th:action="@{/conference/affecter}" th:object="${comitepap}" method="post">
+                              <input type="hidden" th:field="*{conference}"  />
+                                <div class="form-group">
+                                    <label for="selectpap">les papiers</label>
+                                    <select th:field="*{papiers}" multiple="multiple">
+									  <option th:each="pap : ${papers}" 
+									          th:value="${pap.id}" 
+									          th:text="${pap.titre}">papier</option>
+									</select>
+                                </div>
+                                
+                                <div class="text-right">
+                                    <a href="/conference" th:href="@{/conference}" class="btn btn-default">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="panel-footer">
+                        </div>
+                    </div>
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/js :: body"></th:block> /*/-->
+        <script src="../static/js/app.js" th:src="@{/js/app.js}"></script>
+    </body>
+</html>

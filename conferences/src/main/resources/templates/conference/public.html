@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>La gestions des conférences Scientifiques</title>
+        <!--/*/ <th:block th:include="fragments/head :: head"></th:block> /*/-->
+    </head>
+    <body>
+        <!--/*/ <th:block th:include="fragments/header :: body"></th:block> /*/-->
+        <div class="container">
+            <div class="starter-template">
+                <h1>Les Conférences Scientifiques</h1>
+               	  <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>titre</th>
+                                    <th>programme</th>
+                                    <th>lieu</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <div th:if="!${#lists.isEmpty(conferences)}">
+                                <tr th:each = "conf : ${conferences}">
+                                    <td th:text = "${conf.titre}"></td>
+                                    <td> <a th:text="${conf.nameprogfile}" th:href="${'/downloadprogramme/'+conf.id}"></a></td>
+                                    <td th:text = "${conf.lieu}"></td>
+                                    <td th:text = "${conf.dateconf}"></td>
+             
+                                </tr>
+                            </div>
+                            <div th:if="${#lists.isEmpty(conferences)}">
+                                <tr>
+                                    <td>No conference exists!</td>
+                                </tr>
+                            </div>
+                            </tbody>
+                        </table>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/js :: body"></th:block> /*/-->
+    </body>
+</html>

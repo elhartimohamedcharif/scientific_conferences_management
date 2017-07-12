@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	 xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+	 
+    <head></head>
+    <body>
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed"
+                            data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                            aria-controls="navbar">
+                        <span class="sr-only"></span> <span
+                            class="icon-bar"></span> <span class="icon-bar"></span> <span
+                            class="icon-bar"></span>
+                    </button>
+                </div>
+                <div id="navbar" class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav">
+                      		 <li class="dropdown" sec:authorize="isAuthenticated()">
+						      <a class="dropdown-toggle" data-toggle="dropdown" href="#" ><i class="fa fa-user fa-fw"></i> <span sec:authentication="name">Username</span> &nbsp;<i class="fa fa-caret-down"></i></a>
+						    </li> 
+                            <li sec:authorize="hasAuthority('ADMIN')"><a href="/conference" th:href="@{/conference}">Conférence</a></li>
+                   			<li sec:authorize="hasAuthority('AUTEUR')"><a href="/auteur/addpaper" th:href="@{/auteur/addpaper}">Ajouter des papiers</a></li>
+                   			<li sec:authorize="hasAuthority('PROF')"><a href="/prof/getpapers" th:href="@{/prof/getpapers}">Les papiers a traiter</a></li>
+                   			<li sec:authorize="hasAuthority('AUTEUR')"><a href="/auteur/getmypapers" th:href="@{/auteur/getmypapers}">Mes papiers</a></li> 
+                   			<li sec:authorize="!hasAuthority('ADMIN')"><a href="/" th:href="@{/}">les conferences</a></li>						           
+							<li sec:authorize="!isAuthenticated()"><a href="/register" th:href="@{/register}">s'enregistrer</a></li>
+							  
+							<li sec:authorize="!isAuthenticated()"><a href="#" th:href="@{/login}">se connecter</a></li>	
+								
+							<li sec:authorize="!isAuthenticated()"><a href="#" th:href="@{/about}">A propos</a></li>
+							<li sec:authorize="hasAuthority('ADMIN')"><a href="/conference/update" th:href="@{/conference/update}">Modifier Coordonnées</a></li>						
+						   <form class="navbar-form navbar-right" th:action="@{/logout}" method="post">
+							   		<div sec:authorize="isAuthenticated()">
+	                               		 <input type="submit" value="Log out" class="btn btn-success"/>
+	                                </div>
+                       	   </form>
+                       	   
+							
+							
+                   			
+                    </ul>
+                </div>
+                <!--/.nav-collapse -->
+            </div>
+        </nav>
+    </body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Gestion des Conférences Scientifiques</title>
+        <!--/*/ <th:block th:include="fragments/head :: head"></th:block> /*/-->
+    </head>
+    <body onload="$('input[name=dateconf]')
+       .focus();$(function () { $('#inputdateconf')
+       .datepicker({ dateFormat: 'mm/dd/yy' }); });">
+        <!--/*/ <th:block th:include="fragments/header :: body"></th:block> /*/-->
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <!--<div class="container">-->
+                    <div class="panel panel-default">
+                        <!-- Default panel contents -->
+                        <div class="panel-heading">Add Conférence</div>
+                        <div class="panel-body">
+                            <form action="/conference/addconference" th:action="@{/conference/addconference}" th:object="${conference}" method="post" enctype="multipart/form-data" >
+                                <div class="form-group">
+                                    <label for="inputTitre">Titre</label>
+                                    <input type="text" class="form-control" id="inputTitre" placeholder="Titre" th:field="*{titre}" name="titre" />
+                                    <span  class="help-block" th:if="${#fields.hasErrors('titre')}" th:errors="*{titre}">erreur ***</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputLieu">Lieu</label>
+                                    <input type="text" class="form-control" id="inputLieu" placeholder="Lieu" th:field="*{lieu}" name="lieu" />
+                                    <span  class="help-block" th:if="${#fields.hasErrors('lieu')}" th:errors="*{lieu}">Erreur ***</span>
+                                </div>
+                                <div class="form-group">
+                                    <label for="inputProgram">Programme</label>
+                                    <input type="file" class="form-control" id="inputProgram"  name="prog" />
+                                    <span  class="help-block" th:if="${#fields.hasErrors('programme')}" th:errors="*{programme}">Error ***</span>
+                            	</div>
+                               <div class="form-group">
+                                    <label for="inputdateconf">La Date de la conférence</label>
+                                    <input type="date" class="form-control" id="inputdateconf" placeholder="yyyy-MM-dd" th:field="*{dateconf}" name="dateconf" />
+                                    <span  class="help-block" th:if="${#fields.hasErrors('dateconf')}" th:errors="*{dateconf}">Erreur ***</span>
+                                </div> 
+                                
+                                <div class="text-right">
+                                    <a href="/conference" th:href="@{/conference}" class="btn btn-default">Cancel</a>
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                                
+                                
+                            </form>
+                        </div>
+                        <div class="panel-footer">
+                        </div>
+                    </div>
+                    <!--</div>-->
+                </div>
+            </div>
+        </div>
+        <!--/*/ <th:block th:include="fragments/js :: body"></th:block> /*/-->
+        <script src="../static/js/app.js" th:src="@{/js/app.js}"></script>
+    </body>
+</html>
